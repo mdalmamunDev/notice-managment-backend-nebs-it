@@ -1,0 +1,15 @@
+node_modules
+dist
+/uploads/*
+!/uploads/defaults/
+!/uploads/defaults/**
+!/uploads/users/
+!/uploads/users/**
+/winston
+.env
+
+# Firebase credentials
+firebase-adminsdk.json
+
+# Drawio
+.$DB DIAGRAM & RELATIONS.drawio.*
