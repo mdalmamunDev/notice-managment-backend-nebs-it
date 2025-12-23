@@ -7,18 +7,7 @@ import { User } from './user.model';
 import paginate from '../../helpers/paginationHelper';
 import { Role, TUserStatus, UserRole } from './user.constant';
 import { Types } from 'mongoose';
-import { NotificationService } from '../notification/notification.services';
 
-const createAdminOrSuperAdmin = catchAsync(async (req, res) => {
-  const payload = req.body;
-  const result = await UserService.createAdminOrSuperAdmin(payload);
-  sendResponse(res, {
-    code: StatusCodes.CREATED,
-    data: result,
-    message: `${payload.role === 'admin' ? 'Admin' : 'Super Admin'
-      } created successfully`,
-  });
-});
 
 // Function to generate a random location within `radius` km from Dhaka
 const generateRandomLocation = (radius: number) => {
@@ -39,39 +28,6 @@ const generateRandomLocation = (radius: number) => {
   return { lng: newLng, lat: newLat };
 };
 
-const updateAllUsersLocation = catchAsync(async (req, res) => {
-  const users = await User.find();
-
-  if (users.length === 0) {
-    return sendResponse(res, {
-      code: StatusCodes.NOT_FOUND,
-      message: 'No users found',
-    });
-  }
-
-  // Loop through each user and update the location
-  for (const user of users) {
-    // Generate random location within 10 km radius of Dhaka
-    const { lng, lat } = generateRandomLocation(10);
-
-    // Update user location
-    await User.findByIdAndUpdate(user._id, {
-      $set: {
-        location: {
-          type: 'Point',
-          coordinates: [lng, lat],
-        },
-      },
-    });
-
-  }
-
-  sendResponse(res, {
-    code: StatusCodes.OK,
-    data: await User.find(),
-    message: 'My location updated successfully',
-  });
-});
 
 
 
@@ -362,20 +318,6 @@ const connectToPartner = catchAsync(async (req, res) => {
   ])
 
   sendResponse(res, { code: StatusCodes.OK, message: 'Connected successfully', });
-
-  // send notification
-  Promise.all([
-    NotificationService.addNotification({
-      receiverId: authUser._id,
-      title: 'Partner connected :)',
-      message: `Thanks for adding ${partner.name} as your partner. May this space help you grow closer and share your moments with more love and understanding.`
-    }),
-    NotificationService.addNotification({
-      receiverId: partner._id,
-      title: 'Partner connected :)',
-      message: `${authUser.name} have added you as his partner. May this space help you grow closer and share your moments with more love and understanding.`
-    }),
-  ])
 });
 
 export const UserController = {
