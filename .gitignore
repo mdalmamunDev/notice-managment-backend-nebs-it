@@ -6,10 +6,10 @@ dist
 !/uploads/users/
 !/uploads/users/**
 /winston
-.env
 
 # Firebase credentials
 firebase-adminsdk.json
 
 # Drawio
 .$DB DIAGRAM & RELATIONS.drawio.*
+config.bat
